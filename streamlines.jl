@@ -1,5 +1,5 @@
 ### A Pluto.jl notebook ###
-# v0.19.9
+# v0.17.3
 
 using Markdown
 using InteractiveUtils
@@ -31,13 +31,13 @@ md"""
 	This tutorial provides tool to visualize 2D streamlines of incompressible fluid around an obstacle.
 """
 
+# ╔═╡ 4e62378a-cb80-4f4d-8f0a-2aa47005f388
+html"<button onclick='present()'>Presentation mode</button>"
+
 # ╔═╡ 1b444397-1ac1-4465-ad58-7d71e0188627
 md"""
 # Potential flow theory
 """
-
-# ╔═╡ 4e62378a-cb80-4f4d-8f0a-2aa47005f388
-html"<button onclick='present()'>Presentation mode</button>"
 
 # ╔═╡ 6942d945-fb01-42f5-b62c-eb9fa245a672
 begin
