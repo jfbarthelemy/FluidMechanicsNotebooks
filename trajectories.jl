@@ -6,10 +6,12 @@ using InteractiveUtils
 
 # ╔═╡ 4283e710-9965-11ec-102f-7d417724eb35
 begin
+	using PlutoUI
 	using DifferentialEquations
 	using DynamicalSystems
 	using InteractiveDynamics
 	using GLMakie
+	import Pkg ; Pkg.build("GLMakie")
 end
 
 # ╔═╡ f5030635-4827-4578-be77-6bec4f05c29b
@@ -67,12 +69,8 @@ z(0)&=&z_0
 ```
 """
 
-# ╔═╡ 14a84955-fbdc-4f21-8a49-5000992d2fc2
-html"""
-<video width="640" height="640" controls>
-<source src=”./trajectories.mp4” type=video/mp4>
-</video>
-"""
+# ╔═╡ 9acc865b-1633-487f-b275-cab058b4e852
+LocalResource("./trajectories.mp4")
 
 # ╔═╡ 2ea2aa5c-f1e6-44de-811b-0c5314fc600d
 begin
@@ -159,12 +157,15 @@ DifferentialEquations = "0c46a032-eb83-5123-abaf-570d42b7fbaa"
 DynamicalSystems = "61744808-ddfa-5f27-97ff-6e42cc95d634"
 GLMakie = "e9467ef8-e4e7-5192-8a1a-b1aee30e663a"
 InteractiveDynamics = "ec714cd0-5f51-11eb-0b6e-452e7367ff84"
+Pkg = "44cfe95a-1eb2-52ea-b672-e2afdf69b78f"
+PlutoUI = "7f904dfe-b85e-4ff6-b463-dae2292396a8"
 
 [compat]
 DifferentialEquations = "~7.1.0"
 DynamicalSystems = "~2.3.0"
 GLMakie = "~0.5.4"
 InteractiveDynamics = "~0.21.3"
+PlutoUI = "~0.7.40"
 """
 
 # ╔═╡ 00000000-0000-0000-0000-000000000002
@@ -173,13 +174,19 @@ PLUTO_MANIFEST_TOML_CONTENTS = """
 
 julia_version = "1.8.1"
 manifest_format = "2.0"
-project_hash = "37dbd95aa36b0647b1878bdfd801fc9111c4e009"
+project_hash = "104ea679229152f631df0393fc0ce8e9e5d74b53"
 
 [[deps.AbstractFFTs]]
 deps = ["ChainRulesCore", "LinearAlgebra"]
 git-tree-sha1 = "69f7020bd72f069c219b5e8c236c1fa90d2cb409"
 uuid = "621f4979-c628-5d54-868e-fcf4e3e8185c"
 version = "1.2.1"
+
+[[deps.AbstractPlutoDingetjes]]
+deps = ["Pkg"]
+git-tree-sha1 = "8eaf9f1b4921132a4cff3f36a1d9ba923b14a481"
+uuid = "6e696c72-6542-2067-7265-42206c756150"
+version = "1.1.4"
 
 [[deps.AbstractTrees]]
 git-tree-sha1 = "03e0550477d86222521d254b741d470ba17ea0b5"
@@ -849,6 +856,24 @@ git-tree-sha1 = "b7b88a4716ac33fe31d6556c02fc60017594343c"
 uuid = "3e5b6fbb-0976-4d2c-9146-d79de83f2fb0"
 version = "0.1.8"
 
+[[deps.Hyperscript]]
+deps = ["Test"]
+git-tree-sha1 = "8d511d5b81240fc8e6802386302675bdf47737b9"
+uuid = "47d2ed2b-36de-50cf-bf87-49c2cf4b8b91"
+version = "0.0.4"
+
+[[deps.HypertextLiteral]]
+deps = ["Tricks"]
+git-tree-sha1 = "c47c5fa4c5308f27ccaac35504858d8914e102f9"
+uuid = "ac1192a8-f4b3-4bfe-ba22-af5b92cd3ab2"
+version = "0.9.4"
+
+[[deps.IOCapture]]
+deps = ["Logging", "Random"]
+git-tree-sha1 = "f7be53659ab06ddc986428d3a9dcc95f6fa6705a"
+uuid = "b5f81e59-6552-4d32-b1f0-c071b021bf89"
+version = "0.2.2"
+
 [[deps.IfElse]]
 git-tree-sha1 = "debdd00ffef04665ccbb3e150747a77560e8fad1"
 uuid = "615f187c-cbe4-4ef1-ba3b-2fcf58d6d173"
@@ -1505,6 +1530,12 @@ deps = ["ColorSchemes", "Colors", "Dates", "Printf", "Random", "Reexport", "Snoo
 git-tree-sha1 = "21303256d239f6b484977314674aef4bb1fe4420"
 uuid = "995b91a9-d308-5afd-9ec6-746e21dbc043"
 version = "1.3.1"
+
+[[deps.PlutoUI]]
+deps = ["AbstractPlutoDingetjes", "Base64", "ColorTypes", "Dates", "Hyperscript", "HypertextLiteral", "IOCapture", "InteractiveUtils", "JSON", "Logging", "Markdown", "Random", "Reexport", "UUIDs"]
+git-tree-sha1 = "a602d7b0babfca89005da04d89223b867b55319f"
+uuid = "7f904dfe-b85e-4ff6-b463-dae2292396a8"
+version = "0.7.40"
 
 [[deps.PoissonRandom]]
 deps = ["Random"]
@@ -2207,7 +2238,7 @@ version = "3.5.0+0"
 # ╟─f5030635-4827-4578-be77-6bec4f05c29b
 # ╟─095e36ea-0747-4b70-829a-bce881f04660
 # ╠═d3f817f6-cb2a-4cc9-86f7-52cca77052b6
-# ╠═14a84955-fbdc-4f21-8a49-5000992d2fc2
+# ╠═9acc865b-1633-487f-b275-cab058b4e852
 # ╟─4283e710-9965-11ec-102f-7d417724eb35
 # ╟─2ea2aa5c-f1e6-44de-811b-0c5314fc600d
 # ╟─ea658130-3aec-4252-93d1-4d0ef827ece5
