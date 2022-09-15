@@ -12,81 +12,85 @@ end
 
 # ╔═╡ 4283e710-9965-11ec-102f-7d417724eb35
 begin
-	begin
-		using DifferentialEquations
-		using DynamicalSystems
-		using InteractiveDynamics
-		using GLMakie
-	end
-	begin
-		ca(z::Complex) = [real(z), imag(z)]
-		ca(a::AbstractArray) = a[1] + im * a[2]
-		
-		transrot(R, c, α, β) = ζ -> c - R * exp(-im * β) + ζ * exp(im * α)
-		transrot⁻¹(R, c, α, β) = Z -> exp(-im * α) * (Z - c + R * exp(-im * β))
-		
-		joukovski(c) = Z -> Z + c^2 / Z
-		joukovski′(c) = Z -> one(Z) - c^2 / Z^2
-		joukovski⁻¹(c) = z -> (z - √(z^2 - 4c^2)) / 2
-		
-		f_cyc(R, U, m) = Z -> U * (Z + R^2 / Z) - im * m / 2π * log(Z / R)
-		w_cyc(R, U, m) = Z -> U * (one(Z) - R^2 / Z^2) - im * m / (2π * Z)
-	end ;
-	function F!(Ξ̇, Ξ, p, t)
-		R, U, m, c, α, β = p
-		ζ = ca(Ξ)
-		if abs(ζ) < R
-			Ξ̇[1] = zero(eltype(Ξ))
-			Ξ̇[2] = zero(eltype(Ξ))
-		else
-			W = w_cyc(R, U, m)(ζ)
-			absh′² = abs(joukovski′(c)(transrot(R, c, α, β)(ζ)))^2
-			Ξ̇[1] = real(W) / absh′²
-			Ξ̇[2] = -imag(W) / absh′²
+	if lowercase(get(ENV, "CI", "false")) == "false"
+		begin
+			using DifferentialEquations
+			using DynamicalSystems
+			using InteractiveDynamics
+			using GLMakie
 		end
-	end ;
-	function compute_trajectories(p::NamedTuple; kutta = true, record = false, inclin = true)
-		R, U, m, c, α, β = p
-		if kutta
-			m = -4π * U * R * sin(α + β)
-		end
-	
-		X0 = [-5.0; 0.5]
-		tspan = (0.0, 10.0)
-		p = (R, U, m, c, α, β)
-		prob = ODEProblem(F!, X0, tspan, p)
-		# sol = solve(prob)
-		ds = ContinuousDynamicalSystem(prob)
-	
-		function column!(X0s, ρ)
-			r = ρ * R
-			θ₀ = π - asin((m / (2π * U) * log(r / R)) / (r - R / r^2))
-			x0 = (joukovski(c) ∘ transrot(R, c, α, β))(r * exp(im * θ₀))
-			for λ ∈ range(-5.0, 8.0, length = 131)
-				push!(X0s, (ca ∘ transrot⁻¹(R, c, α, β) ∘ joukovski⁻¹(c))(x0 + λ * im * exp(im * α)))
+		begin
+			ca(z::Complex) = [real(z), imag(z)]
+			ca(a::AbstractArray) = a[1] + im * a[2]
+			
+			transrot(R, c, α, β) = ζ -> c - R * exp(-im * β) + ζ * exp(im * α)
+			transrot⁻¹(R, c, α, β) = Z -> exp(-im * α) * (Z - c + R * exp(-im * β))
+			
+			joukovski(c) = Z -> Z + c^2 / Z
+			joukovski′(c) = Z -> one(Z) - c^2 / Z^2
+			joukovski⁻¹(c) = z -> (z - √(z^2 - 4c^2)) / 2
+			
+			f_cyc(R, U, m) = Z -> U * (Z + R^2 / Z) - im * m / 2π * log(Z / R)
+			w_cyc(R, U, m) = Z -> U * (one(Z) - R^2 / Z^2) - im * m / (2π * Z)
+		end ;
+		function F!(Ξ̇, Ξ, p, t)
+			R, U, m, c, α, β = p
+			ζ = ca(Ξ)
+			if abs(ζ) < R
+				Ξ̇[1] = zero(eltype(Ξ))
+				Ξ̇[2] = zero(eltype(Ξ))
+			else
+				W = w_cyc(R, U, m)(ζ)
+				absh′² = abs(joukovski′(c)(transrot(R, c, α, β)(ζ)))^2
+				Ξ̇[1] = real(W) / absh′²
+				Ξ̇[2] = -imag(W) / absh′²
 			end
-		end
-		X0s = []
-		column!(X0s, 5)
-	
-		lθ = range(-π, π, 360)
-		tf = joukovski(c) ∘ transrot(R, c, α, β)
-		if inclin
-			tf = transrot⁻¹(0, 0, α, 0) ∘ tf
-		end
-		P = Point2f[Tuple(ca(tf(R * exp(im * θ)))) for θ ∈ lθ]
-	
-		figure, obs = interactive_evolution(
-			ds, X0s;
-			transform = ca ∘ tf ∘ ca,
-			idxs = 1:2, tsidxs = nothing,
-			m = 0.2, lims = ((-5.5, 5.5), (-5.5, 5.5)), tail = 100, diffeq = (alg = Tsit5(), dtmax = 0.01)
-		)
-		poly!(P, color = :black, strokewidth = 1, aspect_ratio = :equal)
-		if record
-			record_interaction("trajectoires_incl.mp4", figure; framerate = 30, total_time = 10)
-		end
-	end ;
+		end ;
+		function compute_trajectories(p::NamedTuple; kutta = true, record = false, inclin = true)
+			R, U, m, c, α, β = p
+			if kutta
+				m = -4π * U * R * sin(α + β)
+			end
+		
+			X0 = [-5.0; 0.5]
+			tspan = (0.0, 10.0)
+			p = (R, U, m, c, α, β)
+			prob = ODEProblem(F!, X0, tspan, p)
+			# sol = solve(prob)
+			ds = ContinuousDynamicalSystem(prob)
+		
+			function column!(X0s, ρ)
+				r = ρ * R
+				θ₀ = π - asin((m / (2π * U) * log(r / R)) / (r - R / r^2))
+				x0 = (joukovski(c) ∘ transrot(R, c, α, β))(r * exp(im * θ₀))
+				for λ ∈ range(-5.0, 8.0, length = 131)
+					push!(X0s, (ca ∘ transrot⁻¹(R, c, α, β) ∘ joukovski⁻¹(c))(x0 + λ * im * exp(im * α)))
+				end
+			end
+			X0s = []
+			column!(X0s, 5)
+		
+			lθ = range(-π, π, 360)
+			tf = joukovski(c) ∘ transrot(R, c, α, β)
+			if inclin
+				tf = transrot⁻¹(0, 0, α, 0) ∘ tf
+			end
+			P = Point2f[Tuple(ca(tf(R * exp(im * θ)))) for θ ∈ lθ]
+		
+			figure, obs = interactive_evolution(
+				ds, X0s;
+				transform = ca ∘ tf ∘ ca,
+				idxs = 1:2, tsidxs = nothing,
+				m = 0.2, lims = ((-5.5, 5.5), (-5.5, 5.5)), tail = 100, diffeq = (alg = Tsit5(), dtmax = 0.01)
+			)
+			poly!(P, color = :black, strokewidth = 1, aspect_ratio = :equal)
+			if record
+				record_interaction("trajectoires_incl.mp4", figure; framerate = 30, total_time = 10)
+			end
+		end ;
+	else
+		compute_trajectories(p::NamedTuple; kutta = true, record = false, inclin = true) = nothing
+	end;
 end ;
 
 # ╔═╡ f5030635-4827-4578-be77-6bec4f05c29b
@@ -143,11 +147,6 @@ z(0)&=&z_0
 \end{equation*}
 ```
 """
-
-# ╔═╡ 4bf1e903-44aa-4bc6-9a87-0c1ab241b708
-for key in ENV
-	println(key)
-end
 
 # ╔═╡ d3f817f6-cb2a-4cc9-86f7-52cca77052b6
 compute_trajectories((R = 1.0/cos(π/20), U = 1.0, m = 0, c = 0.9, α = π / 20, β = π / 20), kutta = true, record = false, inclin = false)
@@ -2271,7 +2270,6 @@ version = "3.5.0+0"
 # ╔═╡ Cell order:
 # ╟─f5030635-4827-4578-be77-6bec4f05c29b
 # ╟─095e36ea-0747-4b70-829a-bce881f04660
-# ╠═4bf1e903-44aa-4bc6-9a87-0c1ab241b708
 # ╠═d3f817f6-cb2a-4cc9-86f7-52cca77052b6
 # ╟─9acc865b-1633-487f-b275-cab058b4e852
 # ╟─4283e710-9965-11ec-102f-7d417724eb35
