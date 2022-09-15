@@ -11,7 +11,6 @@ begin
 	using DynamicalSystems
 	using InteractiveDynamics
 	using GLMakie
-	import Pkg ; Pkg.build("GLMakie")
 end
 
 # ╔═╡ f5030635-4827-4578-be77-6bec4f05c29b
@@ -68,6 +67,10 @@ z(0)&=&z_0
 \end{equation*}
 ```
 """
+
+# ╔═╡ d3f817f6-cb2a-4cc9-86f7-52cca77052b6
+# Uncomment on a local notebook but doesn't work with Github actions
+# compute_trajectories((R = 1.0/cos(π/20), U = 1.0, m = 0, c = 0.9, α = π / 20, β = π / 20), kutta = true, record = false, inclin = false)
 
 # ╔═╡ 9acc865b-1633-487f-b275-cab058b4e852
 LocalResource("./trajectories.mp4")
@@ -147,9 +150,6 @@ function compute_trajectories(p::NamedTuple; kutta = true, record = false, incli
     end
 end ;
 
-# ╔═╡ d3f817f6-cb2a-4cc9-86f7-52cca77052b6
-compute_trajectories((R = 1.0/cos(π/20), U = 1.0, m = 0, c = 0.9, α = π / 20, β = π / 20), kutta = true, record = false, inclin = false)
-
 # ╔═╡ 00000000-0000-0000-0000-000000000001
 PLUTO_PROJECT_TOML_CONTENTS = """
 [deps]
@@ -157,7 +157,6 @@ DifferentialEquations = "0c46a032-eb83-5123-abaf-570d42b7fbaa"
 DynamicalSystems = "61744808-ddfa-5f27-97ff-6e42cc95d634"
 GLMakie = "e9467ef8-e4e7-5192-8a1a-b1aee30e663a"
 InteractiveDynamics = "ec714cd0-5f51-11eb-0b6e-452e7367ff84"
-Pkg = "44cfe95a-1eb2-52ea-b672-e2afdf69b78f"
 PlutoUI = "7f904dfe-b85e-4ff6-b463-dae2292396a8"
 
 [compat]
@@ -174,7 +173,7 @@ PLUTO_MANIFEST_TOML_CONTENTS = """
 
 julia_version = "1.8.1"
 manifest_format = "2.0"
-project_hash = "104ea679229152f631df0393fc0ce8e9e5d74b53"
+project_hash = "a5d8e6c42ef3368b4bce4e81026ef1aa78d74dc1"
 
 [[deps.AbstractFFTs]]
 deps = ["ChainRulesCore", "LinearAlgebra"]
@@ -2238,7 +2237,7 @@ version = "3.5.0+0"
 # ╟─f5030635-4827-4578-be77-6bec4f05c29b
 # ╟─095e36ea-0747-4b70-829a-bce881f04660
 # ╠═d3f817f6-cb2a-4cc9-86f7-52cca77052b6
-# ╠═9acc865b-1633-487f-b275-cab058b4e852
+# ╟─9acc865b-1633-487f-b275-cab058b4e852
 # ╟─4283e710-9965-11ec-102f-7d417724eb35
 # ╟─2ea2aa5c-f1e6-44de-811b-0c5314fc600d
 # ╟─ea658130-3aec-4252-93d1-4d0ef827ece5
